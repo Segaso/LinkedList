@@ -8,6 +8,7 @@ LinkedList<T>::LinkedList()
 	Tail = Head;
 
 	size = 0;
+	position = 0;
 }
 
 template<class T>
@@ -44,7 +45,6 @@ void LinkedList<T>::Add(T input)
 		Head->next = nullptr;
 		Head->prev = nullptr;
 		Head->value = input;
-		Head->index = 0;
 
 		Current = Head;
 		Tail = Head;
@@ -60,12 +60,11 @@ void LinkedList<T>::Add(T input)
 		Current->prev = Tail; //Set old Tail to previous
 
 		Current->value = input;
-		Current->index = size;
-		
 		//
 		Tail = Current; //Set newest node to tail
 	}
 
+	position = size;
 	size++;
 }
 
@@ -76,25 +75,28 @@ void LinkedList<T>::GetNode(size_t index)
 	{
 		throw "Out of Range";
 	}
-	else if (index == Current->index + 1)
+	else if (index == position + 1)
 	{
 		Current = Current->next;
 	}
-	else if (index >= Current->index)
+	else if (index >= position)
 	{
-		for(size_t i = Current->index; i < index && i <= size; i++)
+		while(position < index && position <= size)
 		{
 			Current = Current->next;
+			position++;
 		}
 	}
 	else
 	{
-		for(size_t i = Current->index; i > index && i >= 0; i--)
+		while(position > index && position >= 0)
 		{
 			Current = Current->prev;
+			position--;
 		}
 	}
 }
+
 
 template<class T>
 void LinkedList<T>::Remove(size_t index)
@@ -106,36 +108,23 @@ void LinkedList<T>::Remove(size_t index)
 		Temp = Head;
 		Head = Temp->next;
 		Head->prev  = nullptr;
-		if(Head->index != 1)
-		Head->index--;
 	}
 	else if (index == size - 1)
 	{
 		Temp = Tail;
 		Tail = Temp->prev;
-
-		if(Tail->index != 1)
-		Tail->index--;
+		Tail->next = nullptr;
 	}
 	else
 	{
 		GetNode(index);
-			  Temp   = Current;
+		
+		Temp   = Current;
 		node* Temp_1 = Current->prev;
 		node* Temp_2 = Current->next;
 
 		Temp_1->next = Temp_2;
 		Temp_2->prev = Temp_1;
-
-		if(Temp_1->index != 0)
-		{
-			Temp_1->index--;
-		}
-		while(Temp_2 != 0)
-		{
-			Temp_2->index--;
-			Temp_2 = Temp_2->next;
-		}
 
 		Temp_1 = nullptr;
 		Temp_2 = nullptr;
