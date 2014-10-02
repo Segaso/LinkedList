@@ -1,4 +1,4 @@
-#include "LinkedList.h"
+#include "list.h"
 #include <iostream>
 int main()
 {
